@@ -1,4 +1,14 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { TaskListProps } from "@/types";
 import { Copy, Star } from "lucide-react";
 
@@ -10,21 +20,21 @@ export function TaskList({
   onDuplicate,
 }: TaskListProps) {
   return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr>
-          <th className="border p-2">Favorito</th>
-          <th className="border p-2">Título</th>
-          <th className="border p-2">Status</th>
-          <th className="border p-2">Prioridade</th>
-          <th className="border p-2">Ações</th>
-        </tr>
-      </thead>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="text-center">Favorito</TableHead>
+          <TableHead>Título</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Prioridade</TableHead>
+          <TableHead className="text-center">Ações</TableHead>
+        </TableRow>
+      </TableHeader>
 
-      <tbody>
+      <TableBody>
         {tasks.map((task) => (
-          <tr key={task.id}>
-            <td className="border p-2 text-center">
+          <TableRow key={task.id}>
+            <TableCell className="text-center">
               <button onClick={() => onToggleFavorite(task.id)}>
                 <Star
                   className={`w-5 h-5 ${
@@ -32,13 +42,13 @@ export function TaskList({
                   }`}
                 />
               </button>
-            </td>
+            </TableCell>
 
-            <td className="border p-2">{task.title}</td>
-            <td className="border p-2">{task.status}</td>
-            <td className="border p-2">{task.priority}</td>
+            <TableCell>{task.title}</TableCell>
+            <TableCell>{task.status}</TableCell>
+            <TableCell>{task.priority}</TableCell>
 
-            <td className="border p-2 flex gap-2">
+            <TableCell className="flex gap-2">
               <Button onClick={() => onEdit(task.id)}>Editar</Button>
 
               <Button onClick={() => onDelete(task.id)} variant="outline">
@@ -48,10 +58,10 @@ export function TaskList({
               <button onClick={() => onDuplicate(task.id)}>
                 <Copy className="w-5 h-5 text-gray-500 hover:text-black" />
               </button>
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }

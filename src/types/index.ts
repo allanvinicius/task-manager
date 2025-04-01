@@ -1,3 +1,8 @@
+export interface ContainerGridProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída";
 
 export type TaskPriority = "Alta" | "Média" | "Baixa";

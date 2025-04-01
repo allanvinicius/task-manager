@@ -1,22 +1,15 @@
-import { Bar } from "react-chartjs-2";
+"use client";
+
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  ResponsiveContainer,
+} from "recharts";
 
 interface TaskChartProps {
   tasks: { status: string }[];
@@ -35,16 +28,21 @@ export default function TaskChart({ tasks }: TaskChartProps) {
     }
   });
 
-  const data = {
-    labels: Object.keys(statusCounts),
-    datasets: [
-      {
-        label: "Número de Tarefas",
-        data: Object.values(statusCounts),
-        backgroundColor: ["#FF6384", "#FFCE56", "#36A2EB"],
-      },
-    ],
-  };
+  const data = Object.keys(statusCounts).map((key) => ({
+    name: key,
+    count: statusCounts[key as keyof typeof statusCounts],
+  }));
 
-  return <Bar data={data} />;
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="count" fill="#4CAF50" barSize={50} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
 }

@@ -29,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="flex gap-8">
+        <main className="w-full flex justify-between gap-8">
           <Sidebar />
           <TaskProvider>{children}</TaskProvider>
         </main>
