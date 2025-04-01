@@ -1,9 +1,9 @@
-import { TaskForm } from "./tasks/task-form";
+import { TaskFormPage } from "./tasks/task-form-page";
 
 export default function Home() {
   return (
     <>
-      <TaskForm />
+      <TaskFormPage />
     </>
   );
 }

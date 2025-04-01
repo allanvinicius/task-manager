@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { createContext, useContext, useState } from "react";
 import { Task, TaskContextProps } from "@/types";
@@ -13,23 +13,27 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   }
 
   function updateTask(id: string, data: Omit<Task, "id">) {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+    );
   }
 
   function deleteTask(id: string) {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   }
 
   function toggleFavorite(id: string) {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, favorite: !t.favorite } : t))
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, favorite: !task.favorite } : task
+      )
     );
   }
 
   function duplicateTask(id: string) {
-    setTasks((prev) => {
-      const taskToDuplicate = prev.find((t) => t.id === id);
-      if (!taskToDuplicate) return prev;
+    setTasks((prevTasks) => {
+      const taskToDuplicate = prevTasks.find((task) => task.id === id);
+      if (!taskToDuplicate) return prevTasks;
 
       const newTask = {
         ...taskToDuplicate,
@@ -37,7 +41,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         title: `${taskToDuplicate.title} (Cópia)`,
       };
 
-      return [...prev, newTask];
+      return [...prevTasks, newTask];
     });
   }
 

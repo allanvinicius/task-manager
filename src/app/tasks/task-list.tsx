@@ -9,16 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TaskListProps } from "@/types";
+import { useTasks } from "@/context/task-context";
+
 import { Copy, Star } from "lucide-react";
 
-export function TaskList({
-  tasks,
-  onEdit,
-  onDelete,
-  onToggleFavorite,
-  onDuplicate,
-}: TaskListProps) {
+export function TaskList() {
+  const { tasks, updateTask, deleteTask, toggleFavorite, duplicateTask } =
+    useTasks();
+
   return (
     <Table>
       <TableHeader>
@@ -32,31 +30,39 @@ export function TaskList({
       </TableHeader>
 
       <TableBody>
-        {tasks.map((task) => (
-          <TableRow key={task.id}>
+        {tasks.map(({ id, favorite, title, status, priority }) => (
+          <TableRow key={id}>
             <TableCell className="text-center">
-              <button onClick={() => onToggleFavorite(task.id)}>
+              <button
+                className="cursor-pointer"
+                onClick={() => toggleFavorite(id)}
+              >
                 <Star
                   className={`w-5 h-5 ${
-                    task.favorite ? "text-yellow-500" : "text-gray-400"
+                    favorite ? "text-yellow-500" : "text-gray-400"
                   }`}
                 />
               </button>
             </TableCell>
 
-            <TableCell>{task.title}</TableCell>
-            <TableCell>{task.status}</TableCell>
-            <TableCell>{task.priority}</TableCell>
+            <TableCell>{title}</TableCell>
+            <TableCell>{status}</TableCell>
+            <TableCell>{priority}</TableCell>
 
-            <TableCell className="flex gap-2">
-              <Button onClick={() => onEdit(task.id)}>Editar</Button>
+            <TableCell className="flex items-center justify-center gap-5">
+              <Button variant="default" onClick={() => updateTask(id)}>
+                Editar
+              </Button>
 
-              <Button onClick={() => onDelete(task.id)} variant="outline">
+              <Button variant="destructive" onClick={() => deleteTask(id)}>
                 Excluir
               </Button>
 
-              <button onClick={() => onDuplicate(task.id)}>
-                <Copy className="w-5 h-5 text-gray-500 hover:text-black" />
+              <button
+                className="cursor-pointer"
+                onClick={() => duplicateTask(id)}
+              >
+                <Copy className="w-5 h-5 text-white" />
               </button>
             </TableCell>
           </TableRow>

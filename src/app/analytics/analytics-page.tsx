@@ -1,6 +1,6 @@
 "use client";
 
-import { ContainerGrid } from "@/components/Container";
+import { ContainerGrid } from "@/components/container";
 import { useTasks } from "@/context/task-context";
 import {
   BarChart,
@@ -12,18 +12,22 @@ import {
   Legend,
 } from "recharts";
 
-export function DashboardPage() {
+export function AnalyticsPage() {
   const { tasks } = useTasks();
 
   const totalTasks = tasks.length;
+
   const completedTasks = tasks.filter(
     (task) => task.status === "Concluída"
   ).length;
+
   const pendingTasks = totalTasks - completedTasks;
 
   const data = [
-    { name: "Concluídas", value: completedTasks, color: "#4CAF50" },
-    { name: "Pendentes", value: pendingTasks, color: "#FF9800" },
+    {
+      concluidas: completedTasks,
+      pendentes: pendingTasks,
+    },
   ];
 
   return (
@@ -59,13 +63,12 @@ export function DashboardPage() {
                 <BarChart data={data}>
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
-                  <Tooltip />
+                  <Tooltip cursor={false} />
                   <Legend />
-                  <Bar dataKey="value" fill="#4CAF50" name="Tarefas">
-                    {data.map((entry, index) => (
-                      <rect key={`bar-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
+
+                  <Bar dataKey="concluidas" name="Concluídas" fill="#4CAF50" />
+
+                  <Bar dataKey="pendentes" name="Pendentes" fill="#FF9800" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

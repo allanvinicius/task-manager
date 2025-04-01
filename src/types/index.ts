@@ -5,7 +5,7 @@ export interface ContainerGridProps {
 
 export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída";
 
-export type TaskPriority = "Alta" | "Média" | "Baixa";
+export type TaskPriority = "Baixa" | "Média" | "Alta";
 
 export interface Task {
   id: string;
@@ -14,7 +14,7 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   favorite: boolean;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface TaskContextProps {
