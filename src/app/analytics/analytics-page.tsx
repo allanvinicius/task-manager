@@ -31,7 +31,7 @@ export function AnalyticsPage() {
   ];
 
   return (
-    <section className="flex flex-col w-full p-8">
+    <section className="w-full flex flex-col p-8">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-4 bg-white/5 shadow rounded-lg text-center">

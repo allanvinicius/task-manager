@@ -7,6 +7,11 @@ export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída" | "Vazio";
 
 export type TaskPriority = "Baixa" | "Média" | "Alta" | "Vazio";
 
+export interface Subtask {
+  title: string;
+  completed: boolean;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -15,6 +20,7 @@ export interface Task {
   priority: TaskPriority;
   favorite: boolean;
   createdAt?: Date;
+  subtasks?: Subtask[];
 }
 
 export interface TaskContextProps {

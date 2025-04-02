@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,7 +11,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTasks } from "@/context/task-context";
-import { BadgeCheck, Copy, Flag, Star } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronDown,
+  Copy,
+  Flag,
+  Star,
+  Trash2,
+} from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -20,7 +28,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { TaskStatus, TaskPriority, Task } from "@/types";
 import {
   DropdownMenu,
@@ -34,6 +41,8 @@ export function TaskList() {
     useTasks();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [newSubtask, setNewSubtask] = useState("");
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   function handleUpdate() {
     if (selectedTask) {
@@ -41,9 +50,86 @@ export function TaskList() {
         title: selectedTask.title,
         status: selectedTask.status,
         priority: selectedTask.priority,
-        favorite: false,
+        favorite: selectedTask.favorite,
+        subtasks: selectedTask.subtasks || [],
       });
     }
+  }
+
+  function addSubtask() {
+    if (!newSubtask.trim()) return;
+
+    setSelectedTask((currentTask) =>
+      currentTask
+        ? {
+            ...currentTask,
+            subtasks: [
+              ...(currentTask.subtasks || []),
+              { title: newSubtask, completed: false },
+            ],
+          }
+        : currentTask
+    );
+
+    setNewSubtask("");
+  }
+
+  function toggleSubtaskCompletion(subtaskIndex: number) {
+    setSelectedTask((currentTask) =>
+      currentTask
+        ? {
+            ...currentTask,
+            subtasks: currentTask.subtasks?.map((subtask, index) =>
+              index === subtaskIndex
+                ? { ...subtask, completed: !subtask.completed }
+                : subtask
+            ),
+          }
+        : currentTask
+    );
+  }
+
+  function updateSubtaskTitle(subtaskIndex: number, newTitle: string) {
+    setSelectedTask((currentTask) =>
+      currentTask
+        ? {
+            ...currentTask,
+            subtasks: currentTask.subtasks?.map((subtask, index) =>
+              index === subtaskIndex ? { ...subtask, title: newTitle } : subtask
+            ),
+          }
+        : currentTask
+    );
+  }
+
+  function deleteSubtask(subtaskIndex: number) {
+    setSelectedTask((currentTask) =>
+      currentTask
+        ? {
+            ...currentTask,
+            subtasks: currentTask.subtasks?.filter(
+              (_, index) => index !== subtaskIndex
+            ),
+          }
+        : currentTask
+    );
+  }
+
+  function duplicateSubtask(index: number) {
+    setSelectedTask((prev) =>
+      prev
+        ? {
+            ...prev,
+            subtasks: [
+              ...(prev.subtasks ?? []),
+              {
+                ...prev.subtasks![index],
+                title: `${prev.subtasks![index].title} (Cópia)`,
+              },
+            ],
+          }
+        : prev
+    );
   }
 
   return (
@@ -54,77 +140,130 @@ export function TaskList() {
           <TableHead>Título</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Prioridade</TableHead>
+          <TableHead>Subtarefa(s)</TableHead>
           <TableHead className="text-center">Ações</TableHead>
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {tasks.map(({ id, favorite, title, status, priority }) => (
-          <TableRow key={id}>
-            <TableCell className="text-center">
-              <button
-                className="cursor-pointer"
-                onClick={() => toggleFavorite(id)}
-              >
-                <Star
-                  className={`w-5 h-5 ${
-                    favorite ? "text-yellow-500" : "text-gray-400"
-                  }`}
-                />
-              </button>
-            </TableCell>
+        {tasks.map(({ id, favorite, title, status, priority, subtasks }) => (
+          <Fragment key={id}>
+            <TableRow>
+              <TableCell className="text-center">
+                <button
+                  className="cursor-pointer"
+                  onClick={() => toggleFavorite(id)}
+                >
+                  <Star
+                    className={`w-5 h-5 ${
+                      favorite ? "text-yellow-500" : "text-gray-400"
+                    }`}
+                  />
+                </button>
+              </TableCell>
 
-            <TableCell>{title}</TableCell>
-            <TableCell>{status}</TableCell>
-            <TableCell>{priority}</TableCell>
+              <TableCell>{title}</TableCell>
+              <TableCell>{status}</TableCell>
+              <TableCell>{priority}</TableCell>
 
-            <TableCell className="flex items-center justify-center gap-5">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="default"
-                    onClick={() =>
-                      setSelectedTask({ id, title, status, priority, favorite })
-                    }
-                  >
-                    Editar
-                  </Button>
-                </DialogTrigger>
+              <TableCell>
+                {subtasks && subtasks.length > 0
+                  ? `${
+                      subtasks.filter((subtask) => !subtask.completed).length
+                    }/${subtasks.length}`
+                  : "Nenhuma"}
+              </TableCell>
 
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Editar Tarefa</DialogTitle>
-                  </DialogHeader>
+              <TableCell className="flex items-center justify-center gap-5">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="default"
+                      onClick={() =>
+                        setSelectedTask({
+                          id,
+                          title,
+                          status,
+                          priority,
+                          favorite,
+                          subtasks: subtasks || [],
+                        })
+                      }
+                    >
+                      Editar
+                    </Button>
+                  </DialogTrigger>
 
-                  {selectedTask && (
-                    <div className="flex flex-col gap-4">
-                      <Input
-                        value={selectedTask.title}
-                        onChange={(e) =>
-                          setSelectedTask((prev) =>
-                            prev ? { ...prev, title: e.target.value } : prev
-                          )
-                        }
-                        placeholder="Título da tarefa"
-                      />
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Editar Tarefa</DialogTitle>
+                    </DialogHeader>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center gap-1 text-sm">
-                            <BadgeCheck className="size-3" />
-                            Status
-                          </span>
+                    {selectedTask && (
+                      <div className="flex flex-col gap-4 mt-3">
+                        <Input
+                          value={selectedTask.title}
+                          onChange={(e) =>
+                            setSelectedTask((prev) =>
+                              prev ? { ...prev, title: e.target.value } : prev
+                            )
+                          }
+                          placeholder="Título da tarefa"
+                        />
 
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost">
-                                {selectedTask.status}
-                              </Button>
-                            </DropdownMenuTrigger>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-1 text-sm">
+                              <BadgeCheck className="size-3" />
+                              Status
+                            </span>
 
-                            <DropdownMenuContent>
-                              {["A Fazer", "Em Andamento", "Concluída"].map(
-                                (option) => (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost">
+                                  {selectedTask.status}
+                                </Button>
+                              </DropdownMenuTrigger>
+
+                              <DropdownMenuContent>
+                                {["A Fazer", "Em Andamento", "Concluída"].map(
+                                  (option) => (
+                                    <DropdownMenuItem
+                                      key={option}
+                                      onClick={() =>
+                                        setSelectedTask((prev) =>
+                                          prev
+                                            ? {
+                                                ...prev,
+                                                status: option as TaskStatus,
+                                              }
+                                            : prev
+                                        )
+                                      }
+                                    >
+                                      {option}
+                                    </DropdownMenuItem>
+                                  )
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-1 text-sm">
+                              <Flag className="size-3" />
+                              Prioridade
+                            </span>
+
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost">
+                                  {selectedTask.priority}
+                                </Button>
+                              </DropdownMenuTrigger>
+
+                              <DropdownMenuContent>
+                                {["Baixa", "Média", "Alta"].map((option) => (
                                   <DropdownMenuItem
                                     key={option}
                                     onClick={() =>
@@ -132,7 +271,7 @@ export function TaskList() {
                                         prev
                                           ? {
                                               ...prev,
-                                              status: option as TaskStatus,
+                                              priority: option as TaskPriority,
                                             }
                                           : prev
                                       )
@@ -140,68 +279,148 @@ export function TaskList() {
                                   >
                                     {option}
                                   </DropdownMenuItem>
-                                )
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Input
+                            value={newSubtask}
+                            onChange={(e) => setNewSubtask(e.target.value)}
+                            placeholder="Adicionar subtarefa"
+                          />
+
+                          <Button onClick={addSubtask}>Adicionar</Button>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          {selectedTask.subtasks?.map((subtask, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between gap-2 p-3 bg-white/5"
+                            >
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={subtask.completed}
+                                  onChange={() =>
+                                    toggleSubtaskCompletion(index)
+                                  }
+                                />
+
+                                <input
+                                  value={subtask.title}
+                                  onChange={(e) =>
+                                    updateSubtaskTitle(index, e.target.value)
+                                  }
+                                  className={
+                                    subtask.completed
+                                      ? "line-through text-sm text-white/20"
+                                      : "text-sm"
+                                  }
+                                />
+                              </div>
+
+                              <div className="flex items-center gap-4">
+                                <button onClick={() => deleteSubtask(index)}>
+                                  <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
+                                </button>
+
+                                <button
+                                  className="cursor-pointer"
+                                  onClick={() => duplicateSubtask(index)}
+                                >
+                                  <Copy className="size-4 text-white" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <DialogClose asChild>
+                          <Button onClick={handleUpdate}>Salvar</Button>
+                        </DialogClose>
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
+
+                <Button variant="destructive" onClick={() => deleteTask(id)}>
+                  Excluir
+                </Button>
+
+                <button
+                  className="cursor-pointer"
+                  onClick={() => duplicateTask(id)}
+                >
+                  <Copy className="w-5 h-5 text-white" />
+                </button>
+
+                <button
+                  className="cursor-pointer"
+                  onClick={() =>
+                    setExpandedTaskId(expandedTaskId === id ? null : id)
+                  }
+                >
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform ${
+                      expandedTaskId === id ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
+                </button>
+              </TableCell>
+            </TableRow>
+
+            {expandedTaskId === id && subtasks && subtasks.length > 0 && (
+              <TableRow>
+                <TableCell colSpan={6} className="p-2">
+                  <div className="flex flex-col gap-2">
+                    {selectedTask?.subtasks?.map((subtask, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between gap-2 p-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={subtask.completed}
+                            onChange={() => toggleSubtaskCompletion(index)}
+                          />
+
+                          <input
+                            value={subtask.title}
+                            onChange={(e) =>
+                              updateSubtaskTitle(index, e.target.value)
+                            }
+                            className={
+                              subtask.completed
+                                ? "line-through text-sm text-white/20"
+                                : "text-sm"
+                            }
+                          />
                         </div>
 
                         <div className="flex items-center gap-4">
-                          <span className="flex items-center gap-1 text-sm">
-                            <Flag className="size-3" />
-                            Prioridade
-                          </span>
+                          <button onClick={() => deleteSubtask(index)}>
+                            <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
+                          </button>
 
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost">
-                                {selectedTask.priority}
-                              </Button>
-                            </DropdownMenuTrigger>
-
-                            <DropdownMenuContent>
-                              {["Baixa", "Média", "Alta"].map((option) => (
-                                <DropdownMenuItem
-                                  key={option}
-                                  onClick={() =>
-                                    setSelectedTask((prev) =>
-                                      prev
-                                        ? {
-                                            ...prev,
-                                            priority: option as TaskPriority,
-                                          }
-                                        : prev
-                                    )
-                                  }
-                                >
-                                  {option}
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <button
+                            className="cursor-pointer"
+                            onClick={() => duplicateSubtask(index)}
+                          >
+                            <Copy className="size-4 text-white" />
+                          </button>
                         </div>
                       </div>
-
-                      <DialogClose asChild>
-                        <Button onClick={handleUpdate}>Salvar</Button>
-                      </DialogClose>
-                    </div>
-                  )}
-                </DialogContent>
-              </Dialog>
-
-              <Button variant="destructive" onClick={() => deleteTask(id)}>
-                Excluir
-              </Button>
-
-              <button
-                className="cursor-pointer"
-                onClick={() => duplicateTask(id)}
-              >
-                <Copy className="w-5 h-5 text-white" />
-              </button>
-            </TableCell>
-          </TableRow>
+                    ))}
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </Fragment>
         ))}
       </TableBody>
     </Table>

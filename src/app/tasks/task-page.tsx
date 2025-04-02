@@ -3,7 +3,7 @@ import { Container } from "@/components/Container";
 
 export function TaskPage() {
   return (
-    <section className="flex flex-col w-full">
+    <section className="w-full flex flex-col">
       <Container>
         <TaskList />
       </Container>

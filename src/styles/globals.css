@@ -9,6 +9,10 @@ body {
   font-family: "Geist", sans-serif;
 }
 
+table {
+  border-collapse: none;
+}
+
 :root {
   --radius: 0.5rem;
   --background: #000000;
@@ -131,15 +135,6 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-
-/* @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-} */
 
 @layer base {
   * {
