@@ -1,6 +1,6 @@
 "use client";
 
-import { ContainerGrid } from "@/components/container";
+import { Container } from "@/components/container";
 import { useTasks } from "@/context/task-context";
 import {
   BarChart,
@@ -32,7 +32,7 @@ export function AnalyticsPage() {
 
   return (
     <section className="flex flex-col w-full p-8">
-      <ContainerGrid>
+      <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-4 bg-white/5 shadow rounded-lg text-center">
             <h2 className="text-xl font-semibold">Total de Tarefas</h2>
@@ -74,7 +74,7 @@ export function AnalyticsPage() {
             </div>
           </div>
         </div>
-      </ContainerGrid>
+      </Container>
     </section>
   );
 }

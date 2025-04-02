@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TaskStatus, TaskPriority } from "@/types";
-import { ContainerGrid } from "@/components/container";
+import { Container } from "@/components/container";
 import { useTasks } from "@/context/task-context";
 import {
   DropdownMenu,
@@ -39,7 +39,7 @@ export function TaskForm() {
 
   return (
     <section className="w-full flex p-8">
-      <ContainerGrid>
+      <Container>
         <form
           onSubmit={handleSubmit}
           className="flex items-center flex-col space-y-4"
@@ -116,7 +116,7 @@ export function TaskForm() {
             Salvar
           </Button>
         </form>
-      </ContainerGrid>
+      </Container>
     </section>
   );
 }

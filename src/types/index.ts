@@ -1,4 +1,4 @@
-export interface ContainerGridProps {
+export interface ContainerProps {
   children: React.ReactNode;
   className?: string;
 }
