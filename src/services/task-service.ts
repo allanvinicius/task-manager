@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import { Status, Priority } from "@prisma/client";
 
 // Criar uma nova tarefa
 export async function createTask(data: {
   title: string;
   description?: string;
-  status: string;
-  priority: string;
+  status: Status;
+  priority: Priority;
 }) {
   return await prisma.task.create({ data });
 }
@@ -21,8 +22,8 @@ export async function updateTask(
   data: Partial<{
     title: string;
     description?: string;
-    status: string;
-    priority: string;
+    status: Status;
+    priority: Priority;
     favorite: boolean;
   }>
 ) {

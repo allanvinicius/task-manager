@@ -3,9 +3,9 @@ export interface ContainerGridProps {
   className?: string;
 }
 
-export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída";
+export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída" | "Vazio";
 
-export type TaskPriority = "Baixa" | "Média" | "Alta";
+export type TaskPriority = "Baixa" | "Média" | "Alta" | "Vazio";
 
 export interface Task {
   id: string;
@@ -33,7 +33,6 @@ export interface TaskListProps {
   onToggleFavorite: (id: string) => void;
   onDuplicate: (id: string) => void;
 }
-
 
 export interface TaskFormProps {
   initialData?: Task;

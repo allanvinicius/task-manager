@@ -2,28 +2,39 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { TaskStatus, TaskPriority } from "@/types";
 import { ContainerGrid } from "@/components/container";
 import { useTasks } from "@/context/task-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { BadgeCheck, Flag } from "lucide-react";
 
 export function TaskForm() {
   const { addTask } = useTasks();
   const [title, setTitle] = useState("");
-  const [status, setStatus] = useState<TaskStatus>("A Fazer");
-  const [priority, setPriority] = useState<TaskPriority>("Média");
+  const [status, setStatus] = useState<TaskStatus | null>("A Fazer");
+  const [priority, setPriority] = useState<TaskPriority | null>("Baixa");
 
   const isTitleEmpty = title.trim() === "";
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (isTitleEmpty) return;
-    addTask({ title, status, priority, favorite: false });
+    addTask({
+      title,
+      status: status as TaskStatus,
+      priority: priority as TaskPriority,
+      favorite: false,
+    });
 
     setTitle("");
     setStatus("A Fazer");
-    setPriority("Média");
+    setPriority("Baixa");
   }
 
   return (
@@ -33,7 +44,7 @@ export function TaskForm() {
           onSubmit={handleSubmit}
           className="flex items-center flex-col space-y-4"
         >
-          <div className="w-full flex items-center gap-6">
+          <div className="w-full flex items-center gap-10">
             <Input
               value={title}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -43,31 +54,57 @@ export function TaskForm() {
             />
 
             <div className="flex items-center gap-4">
-              <Select
-                options={[
-                  { value: "A Fazer", label: "A Fazer" },
-                  { value: "Em Andamento", label: "Em Andamento" },
-                  { value: "Concluída", label: "Concluída" },
-                ]}
-                value={status}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setStatus(e.target.value as TaskStatus)
-                }
-                disabled={isTitleEmpty}
-              />
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1 text-sm">
+                  <BadgeCheck className="size-3" />
+                  Status
+                </span>
 
-              <Select
-                options={[
-                  { value: "Baixa", label: "Baixa" },
-                  { value: "Média", label: "Média" },
-                  { value: "Alta", label: "Alta" },
-                ]}
-                value={priority}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  setPriority(e.target.value as TaskPriority)
-                }
-                disabled={isTitleEmpty}
-              />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" disabled={isTitleEmpty}>
+                      {status || "Vazio"}
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    {["A Fazer", "Em Andamento", "Concluída"].map((option) => (
+                      <DropdownMenuItem
+                        key={option}
+                        onClick={() => setStatus(option as TaskStatus)}
+                      >
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1 text-sm">
+                  <Flag className="size-3" />
+                  Prioridade
+                </span>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" disabled={isTitleEmpty}>
+                      {priority || "Vazio"}
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    {["Baixa", "Média", "Alta"].map((option) => (
+                      <DropdownMenuItem
+                        key={option}
+                        onClick={() => setPriority(option as TaskPriority)}
+                      >
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
 

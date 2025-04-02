@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined, ChartNoAxesGantt, Pencil } from "lucide-react";
+import { ChartNoAxesColumn, ChartNoAxesGantt, Pencil } from "lucide-react";
 import Link from "next/link";
 
 export default function Sidebar() {
@@ -9,25 +9,25 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-4">
         <Link
           href="/"
-          className="flex items-center gap-4 p-2 hover:bg-white/20 rounded-md"
+          className="flex items-center gap-4 p-2 rounded-md hover:bg-white hover:text-black transition-all"
         >
-          <Pencil className="size-5" />
+          <Pencil className="size-4" />
           Criar Tarefas
         </Link>
 
         <Link
           href="/tasks"
-          className="flex items-center gap-4 p-2 hover:bg-white/20 rounded"
+          className="flex items-center gap-4 p-2 rounded-md hover:bg-white hover:text-black transition-all"
         >
-          <ChartNoAxesGantt className="size-5" />
+          <ChartNoAxesGantt className="size-4" />
           Gerenciar Tarefas
         </Link>
 
         <Link
           href="/analytics"
-          className="flex items-center gap-4 p-2 hover:bg-white/20 rounded"
+          className="flex items-center gap-4 p-2 rounded-md hover:bg-white hover:text-black transition-all"
         >
-          <ChartNoAxesCombined className="size-5" />
+          <ChartNoAxesColumn className="size-4" />
           Analytics
         </Link>
       </nav>
