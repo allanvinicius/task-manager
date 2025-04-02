@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TaskStatus, TaskPriority } from "@/types";
-import { Container } from "@/components/container";
+import { Container } from "@/components/Container";
 import { useTasks } from "@/context/task-context";
 import {
   DropdownMenu,

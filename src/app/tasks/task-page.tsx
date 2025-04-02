@@ -1,5 +1,5 @@
 import { TaskList } from "./task-list";
-import { Container } from "@/components/container";
+import { Container } from "@/components/Container";
 
 export function TaskPage() {
   return (
