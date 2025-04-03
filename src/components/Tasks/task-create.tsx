@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BadgeCheck, Flag } from "lucide-react";
 
-export function TaskForm() {
+export function TaskCreate() {
   const { addTask } = useTasks();
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState<TaskStatus | null>("A Fazer");
@@ -24,11 +24,14 @@ export function TaskForm() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    
     if (isTitleEmpty) return;
+
     addTask({
+      id: crypto.randomUUID(),
       title,
-      status: status as TaskStatus,
-      priority: priority as TaskPriority,
+      status: status ?? "A Fazer",
+      priority: priority ?? "Baixa",
       favorite: false,
     });
 

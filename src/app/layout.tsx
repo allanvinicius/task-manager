@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "@/styles/globals.css";
-import Sidebar from "@/components/Sidebar";
 import { TaskProvider } from "@/context/task-context";
 
 const geistSans = Geist({
@@ -26,7 +25,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
         <main className="w-full flex flex-1 justify-between gap-8">
-          <Sidebar />
           <TaskProvider>{children}</TaskProvider>
         </main>
       </body>

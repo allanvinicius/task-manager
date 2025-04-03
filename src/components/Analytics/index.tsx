@@ -12,7 +12,7 @@ import {
   Legend,
 } from "recharts";
 
-export function AnalyticsPage() {
+export function Analytics() {
   const { tasks } = useTasks();
 
   const totalTasks = tasks.length;

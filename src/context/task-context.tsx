@@ -7,14 +7,15 @@ const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   function addTask(task: Omit<Task, "id">) {
     setTasks((prev) => [...prev, { ...task, id: crypto.randomUUID() }]);
   }
 
-  function updateTask(id: string, data: Omit<Task, "id">) {
+  function updateTask(updatedTask: Task) {
     setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
   }
 
@@ -54,6 +55,8 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         deleteTask,
         toggleFavorite,
         duplicateTask,
+        expandedTaskId,
+        setExpandedTaskId,
       }}
     >
       {children}

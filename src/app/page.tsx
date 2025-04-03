@@ -1,9 +1,5 @@
-import { TaskFormPage } from "./tasks/task-form-page";
+import { Dashboard } from "@/components/Dashboard";
 
 export default function Home() {
-  return (
-    <>
-      <TaskFormPage />
-    </>
-  );
+  return <Dashboard />;
 }

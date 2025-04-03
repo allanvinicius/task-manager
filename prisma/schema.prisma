@@ -11,21 +11,27 @@ model Task {
   id          String   @id @default(uuid())
   title       String
   description String?
-  status      Status   @default(TODO)
+  status      Status   @default(TO_DO)
   priority    Priority @default(MEDIUM)
-  favorite    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  subtasks    Subtask[]
+}
+
+model Subtask {
+  id        String  @id @default(uuid())
+  title     String
+  completed Boolean @default(false)
+  taskId    String
+  task      Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 enum Status {
-  A Fazer
-  Em Andamento
-  Concluída
+  TO_DO       @map("A Fazer")
+  IN_PROGRESS @map("Em Andamento")
+  COMPLETED   @map("Concluída")
 }
 
 enum Priority {
-  Baixa
-  Média
-  Alta
+  LOW    @map("Baixa")
+  MEDIUM @map("Média")
+  HIGH   @map("Alta")
 }

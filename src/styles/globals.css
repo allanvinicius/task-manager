@@ -9,10 +9,6 @@ body {
   font-family: "Geist", sans-serif;
 }
 
-table {
-  border-collapse: none;
-}
-
 :root {
   --radius: 0.5rem;
   --background: #000000;
