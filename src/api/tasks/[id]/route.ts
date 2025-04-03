@@ -35,7 +35,6 @@ export async function POST(
       description: task.description,
       status: task.status,
       priority: task.priority,
-      favorite: task.favorite,
     },
   });
 
