@@ -40,31 +40,38 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify({ id }),
       headers: { "Content-Type": "application/json" },
     });
-    
+
     setTasks((prev) => prev.filter((task) => task.id !== id));
   }
 
-  function toggleFavorite(id: string) {
+  async function toggleFavorite(id: string) {
+    const res = await fetch(`/api/tasks/${id}/favorite`, {
+      method: "PATCH",
+    });
+
+    if (!res.ok) {
+      throw new Error("Erro ao atualizar favorito");
+    }
+
+    const updatedTask = await res.json();
+
     setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, favorite: !task.favorite } : task
-      )
+      prevTasks.map((task) => (task.id === id ? updatedTask : task))
     );
   }
 
-  function duplicateTask(id: string) {
-    setTasks((prevTasks) => {
-      const taskToDuplicate = prevTasks.find((task) => task.id === id);
-      if (!taskToDuplicate) return prevTasks;
-
-      const newTask = {
-        ...taskToDuplicate,
-        id: crypto.randomUUID(),
-        title: `${taskToDuplicate.title} (Cópia)`,
-      };
-
-      return [...prevTasks, newTask];
+  async function duplicateTask(id: string) {
+    const res = await fetch(`/api/tasks/${id}/duplicate`, {
+      method: "POST",
     });
+
+    if (!res.ok) {
+      throw new Error("Erro ao duplicar tarefa");
+    }
+
+    const duplicatedTask = await res.json();
+
+    setTasks((prevTasks) => [...prevTasks, duplicatedTask]);
   }
 
   return (
