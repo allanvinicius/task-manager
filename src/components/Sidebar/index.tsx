@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 
 export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const isMobile = useIsMobile();
 

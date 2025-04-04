@@ -222,7 +222,7 @@ export function TaskList() {
                             placeholder="Título da tarefa"
                           />
 
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between min-[1920px]:flex-row min-[1440px]:flex-row min-[1024px]:flex-row min-[768px]:flex-row min-[480px]:flex-row min-[425px]:flex-col min-[390px]:flex-col min-[375px]:flex-col">
                             <div className="flex items-center gap-4">
                               <span className="flex items-center gap-1 text-sm">
                                 <BadgeCheck className="size-3" />
@@ -297,7 +297,7 @@ export function TaskList() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 min-[1920px]:flex-row min-[1440px]:flex-row min-[768px]:flex-row min-[480px]:flex-row min-[425px]:flex-row min-[390px]:flex-col min-[375px]:flex-col">
                             <Input
                               value={newSubtask}
                               onChange={(e) => setNewSubtask(e.target.value)}
