@@ -9,18 +9,39 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
-  function addTask(task: Omit<Task, "id">) {
-    setTasks((prev) => [...prev, { ...task, id: crypto.randomUUID() }]);
+  async function addTask(task: Omit<Task, "id">) {
+    const res = await fetch("/api/tasks", {
+      method: "POST",
+      body: JSON.stringify(task),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const newTask = await res.json();
+
+    setTasks((prev) => [...prev, newTask]);
   }
 
-  function updateTask(updatedTask: Task) {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+  async function updateTask(updatedTask: Task) {
+    const res = await fetch("/api/tasks", {
+      method: "PUT",
+      body: JSON.stringify(updatedTask),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const task = await res.json();
+    setTasks((prev) =>
+      prev.map((taskUpdate) => (taskUpdate.id === task.id ? task : taskUpdate))
     );
   }
 
-  function deleteTask(id: string) {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  async function deleteTask(id: string) {
+    await fetch("/api/tasks", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+      headers: { "Content-Type": "application/json" },
+    });
+    
+    setTasks((prev) => prev.filter((task) => task.id !== id));
   }
 
   function toggleFavorite(id: string) {
