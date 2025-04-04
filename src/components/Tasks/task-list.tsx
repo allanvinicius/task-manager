@@ -67,13 +67,15 @@ export function TaskList() {
     const updatedTask = await res.json();
 
     setSelectedTask(updatedTask);
-    setNewSubtask("");
   }
 
   async function toggleSubtaskCompletion(subtaskId: string) {
-    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}/toggle`, {
-      method: "PATCH",
-    });
+    const res = await fetch(
+      `/api/tasks/${subtaskId}/subtasks/${subtaskId}/toggle`,
+      {
+        method: "PATCH",
+      }
+    );
 
     if (!res.ok) throw new Error("Erro ao alternar subtarefa");
 
@@ -107,9 +109,12 @@ export function TaskList() {
   }
 
   async function duplicateSubtask(subtaskId: string) {
-    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}/duplicate`, {
-      method: "POST",
-    });
+    const res = await fetch(
+      `/api/tasks/${subtaskId}/subtasks/${subtaskId}/duplicate`,
+      {
+        method: "POST",
+      }
+    );
 
     if (!res.ok) throw new Error("Erro ao duplicar subtarefa");
 
@@ -172,7 +177,7 @@ export function TaskList() {
                             status,
                             priority,
                             favorite,
-                            subtasks: subtasks || [],
+                            subtasks: subtasks,
                           })
                         }
                       >
@@ -213,7 +218,7 @@ export function TaskList() {
                                 </DropdownMenuTrigger>
 
                                 <DropdownMenuContent>
-                                  {["A Fazer", "Em Andamento", "Concluída"].map(
+                                  {["TO_DO", "IN_PROGRESS", "COMPLETED"].map(
                                     (option) => (
                                       <DropdownMenuItem
                                         key={option}
@@ -250,7 +255,7 @@ export function TaskList() {
                                 </DropdownMenuTrigger>
 
                                 <DropdownMenuContent>
-                                  {["Baixa", "Média", "Alta"].map((option) => (
+                                  {["LOW", "MEDIUM", "HIGH"].map((option) => (
                                     <DropdownMenuItem
                                       key={option}
                                       onClick={() =>
@@ -374,60 +379,57 @@ export function TaskList() {
                 </TableCell>
               </TableRow>
 
-              {expandedTaskId === id && subtasks && subtasks.length > 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} className="p-2 text-center">
-                    <div className="flex flex-col gap-2">
-                      {selectedTask?.subtasks?.map((subtask, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between gap-2 p-2"
-                        >
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={subtask.completed}
-                              onChange={() =>
-                                toggleSubtaskCompletion(String(index))
-                              }
-                            />
+              {expandedTaskId === id &&
+                selectedTask?.subtasks &&
+                selectedTask.subtasks.length > 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="p-2 text-center">
+                      <div className="flex flex-col gap-2">
+                        {selectedTask?.subtasks?.map((subtask) => (
+                          <div
+                            key={subtask.id}
+                            className="flex items-center justify-between gap-2 p-2"
+                          >
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={subtask.completed}
+                                onChange={() =>
+                                  toggleSubtaskCompletion(subtask.id)
+                                }
+                              />
 
-                            <input
-                              value={subtask.title}
-                              onChange={(e) =>
-                                updateSubtaskTitle(
-                                  String(index),
-                                  e.target.value
-                                )
-                              }
-                              className={
-                                subtask.completed
-                                  ? "line-through text-sm text-white/20"
-                                  : "text-sm"
-                              }
-                            />
+                              <input
+                                value={subtask.title}
+                                onChange={(e) =>
+                                  updateSubtaskTitle(subtask.id, e.target.value)
+                                }
+                                className={
+                                  subtask.completed
+                                    ? "line-through text-sm text-white/20"
+                                    : "text-sm"
+                                }
+                              />
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                              <button onClick={() => deleteSubtask(subtask.id)}>
+                                <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
+                              </button>
+
+                              <button
+                                className="cursor-pointer"
+                                onClick={() => duplicateSubtask(subtask.id)}
+                              >
+                                <Copy className="size-4 text-white" />
+                              </button>
+                            </div>
                           </div>
-
-                          <div className="flex items-center gap-4">
-                            <button
-                              onClick={() => deleteSubtask(String(index))}
-                            >
-                              <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
-                            </button>
-
-                            <button
-                              className="cursor-pointer"
-                              onClick={() => duplicateSubtask(String(index))}
-                            >
-                              <Copy className="size-4 text-white" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
+                        ))}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
             </Fragment>
           ))}
         </TableBody>

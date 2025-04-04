@@ -16,8 +16,8 @@ import { BadgeCheck, Flag } from "lucide-react";
 export function TaskCreate() {
   const { addTask } = useTasks();
   const [title, setTitle] = useState("");
-  const [status, setStatus] = useState<TaskStatus | null>("A Fazer");
-  const [priority, setPriority] = useState<TaskPriority | null>("Baixa");
+  const [status, setStatus] = useState<TaskStatus | null>("TO_DO");
+  const [priority, setPriority] = useState<TaskPriority | null>("LOW");
 
   const isTitleEmpty = title.trim() === "";
 
@@ -29,14 +29,14 @@ export function TaskCreate() {
     addTask({
       id: crypto.randomUUID(),
       title,
-      status: status ?? "A Fazer",
-      priority: priority ?? "Baixa",
+      status: status ?? "TO_DO",
+      priority: priority ?? "LOW",
       favorite: false,
     });
 
     setTitle("");
-    setStatus("A Fazer");
-    setPriority("Baixa");
+    setStatus("TO_DO");
+    setPriority("LOW");
   }
 
   return (
@@ -69,7 +69,7 @@ export function TaskCreate() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
-                  {["A Fazer", "Em Andamento", "Concluída"].map((option) => (
+                  {["TO_DO", "IN_PROGRESS", "COMPLETED"].map((option) => (
                     <DropdownMenuItem
                       key={option}
                       onClick={() => setStatus(option as TaskStatus)}
@@ -95,7 +95,7 @@ export function TaskCreate() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
-                  {["Baixa", "Média", "Alta"].map((option) => (
+                  {["LOW", "MEDIUM", "HIGH"].map((option) => (
                     <DropdownMenuItem
                       key={option}
                       onClick={() => setPriority(option as TaskPriority)}

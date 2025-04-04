@@ -17,7 +17,7 @@ export function Analytics() {
   const totalTasks = tasks.length;
 
   const completedTasks = tasks.filter(
-    (task) => task.status === "Concluída"
+    (task) => task.status === "COMPLETED"
   ).length;
 
   const pendingTasks = totalTasks - completedTasks;

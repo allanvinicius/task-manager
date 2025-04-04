@@ -8,9 +8,9 @@ export interface SidebarProps {
   setActiveTab: (tab: "create" | "tasks" | "analytics") => void;
 }
 
-export type TaskStatus = "A Fazer" | "Em Andamento" | "Concluída";
+export type TaskStatus = "TO_DO" | "IN_PROGRESS" | "COMPLETED";
 
-export type TaskPriority = "Baixa" | "Média" | "Alta";
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface Subtask {
   id: string;
