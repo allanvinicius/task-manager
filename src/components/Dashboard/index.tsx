@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar";
 import { Analytics } from "@/components/Analytics";
 import { TaskCreate } from "@/components/Tasks/task-create";
 import { TaskList } from "@/components/Tasks/task-list";

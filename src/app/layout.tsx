@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased`}>
-        <main className="w-full flex flex-1 justify-between gap-8">
+        <main className="relative w-full flex items-start justify-between gap-8 overflow-hidden">
           <TaskProvider>{children}</TaskProvider>
         </main>
       </body>

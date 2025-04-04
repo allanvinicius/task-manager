@@ -140,3 +140,9 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --breakpoint-desktop: 1920px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-mobile: 480px;
+}
