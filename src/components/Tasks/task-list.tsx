@@ -56,89 +56,65 @@ export function TaskList() {
     }
   }
 
-  function addSubtask() {
-    if (!newSubtask.trim()) return;
+  async function addSubtask(subtaskId: string, title: string) {
+    const res = await fetch(`/api/tasks/${subtaskId}/subtasks`, {
+      method: "POST",
+      body: JSON.stringify({ title }),
+    });
 
-    setSelectedTask((currentTask) =>
-      currentTask
-        ? {
-            ...currentTask,
-            subtasks: [
-              ...(currentTask.subtasks || []),
-              { id: crypto.randomUUID(), title: newSubtask, completed: false },
-            ],
-          }
-        : currentTask
-    );
+    if (!res.ok) throw new Error("Erro ao adicionar subtarefa");
 
+    const updatedTask = await res.json();
+
+    setSelectedTask(updatedTask);
     setNewSubtask("");
-    handleUpdate();
   }
 
-  function toggleSubtaskCompletion(subtaskIndex: number) {
-    setSelectedTask((currentTask) =>
-      currentTask
-        ? {
-            ...currentTask,
-            subtasks: currentTask.subtasks?.map((subtask, index) =>
-              index === subtaskIndex
-                ? { ...subtask, completed: !subtask.completed }
-                : subtask
-            ),
-          }
-        : currentTask
-    );
+  async function toggleSubtaskCompletion(subtaskId: string) {
+    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}/toggle`, {
+      method: "PATCH",
+    });
 
-    handleUpdate();
+    if (!res.ok) throw new Error("Erro ao alternar subtarefa");
+
+    const updatedTask = await res.json();
+
+    setSelectedTask(updatedTask);
   }
 
-  function updateSubtaskTitle(subtaskIndex: number, newTitle: string) {
-    setSelectedTask((currentTask) =>
-      currentTask
-        ? {
-            ...currentTask,
-            subtasks: currentTask.subtasks?.map((subtask, index) =>
-              index === subtaskIndex ? { ...subtask, title: newTitle } : subtask
-            ),
-          }
-        : currentTask
-    );
+  async function updateSubtaskTitle(subtaskId: string, title: string) {
+    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ title }),
+    });
 
-    handleUpdate();
+    if (!res.ok) throw new Error("Erro ao atualizar subtarefa");
+
+    const updatedTask = await res.json();
+    setSelectedTask(updatedTask);
   }
 
-  function deleteSubtask(subtaskIndex: number) {
-    setSelectedTask((currentTask) =>
-      currentTask
-        ? {
-            ...currentTask,
-            subtasks: currentTask.subtasks?.filter(
-              (_, index) => index !== subtaskIndex
-            ),
-          }
-        : currentTask
-    );
+  async function deleteSubtask(subtaskId: string) {
+    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}`, {
+      method: "DELETE",
+    });
 
-    handleUpdate();
+    if (!res.ok) throw new Error("Erro ao deletar subtarefa");
+
+    const updatedTask = await res.json();
+
+    setSelectedTask(updatedTask);
   }
 
-  function duplicateSubtask(index: number) {
-    setSelectedTask((prev) =>
-      prev
-        ? {
-            ...prev,
-            subtasks: [
-              ...(prev.subtasks ?? []),
-              {
-                ...prev.subtasks![index],
-                title: `${prev.subtasks![index].title} (Cópia)`,
-              },
-            ],
-          }
-        : prev
-    );
+  async function duplicateSubtask(subtaskId: string) {
+    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}/duplicate`, {
+      method: "POST",
+    });
 
-    handleUpdate();
+    if (!res.ok) throw new Error("Erro ao duplicar subtarefa");
+
+    const updatedTask = await res.json();
+    setSelectedTask(updatedTask);
   }
 
   return (
@@ -304,13 +280,19 @@ export function TaskList() {
                               placeholder="Adicionar subtarefa"
                             />
 
-                            <Button onClick={addSubtask}>Adicionar</Button>
+                            <Button
+                              onClick={() =>
+                                addSubtask(selectedTask.id, newSubtask)
+                              }
+                            >
+                              Adicionar
+                            </Button>
                           </div>
 
                           <div className="flex flex-col gap-2">
-                            {selectedTask.subtasks?.map((subtask, index) => (
+                            {selectedTask.subtasks?.map((subtask) => (
                               <div
-                                key={index}
+                                key={subtask.id}
                                 className="flex items-center justify-between gap-2 p-3 bg-white/5"
                               >
                                 <div className="flex items-center gap-2">
@@ -318,14 +300,17 @@ export function TaskList() {
                                     type="checkbox"
                                     checked={subtask.completed}
                                     onChange={() =>
-                                      toggleSubtaskCompletion(index)
+                                      toggleSubtaskCompletion(subtask.id)
                                     }
                                   />
 
                                   <input
                                     value={subtask.title}
                                     onChange={(e) =>
-                                      updateSubtaskTitle(index, e.target.value)
+                                      updateSubtaskTitle(
+                                        subtask.id,
+                                        e.target.value
+                                      )
                                     }
                                     className={
                                       subtask.completed
@@ -336,13 +321,15 @@ export function TaskList() {
                                 </div>
 
                                 <div className="flex items-center gap-4">
-                                  <button onClick={() => deleteSubtask(index)}>
+                                  <button
+                                    onClick={() => deleteSubtask(subtask.id)}
+                                  >
                                     <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
                                   </button>
 
                                   <button
                                     className="cursor-pointer"
-                                    onClick={() => duplicateSubtask(index)}
+                                    onClick={() => duplicateSubtask(subtask.id)}
                                   >
                                     <Copy className="size-4 text-white" />
                                   </button>
@@ -400,13 +387,18 @@ export function TaskList() {
                             <input
                               type="checkbox"
                               checked={subtask.completed}
-                              onChange={() => toggleSubtaskCompletion(index)}
+                              onChange={() =>
+                                toggleSubtaskCompletion(String(index))
+                              }
                             />
 
                             <input
                               value={subtask.title}
                               onChange={(e) =>
-                                updateSubtaskTitle(index, e.target.value)
+                                updateSubtaskTitle(
+                                  String(index),
+                                  e.target.value
+                                )
                               }
                               className={
                                 subtask.completed
@@ -417,13 +409,15 @@ export function TaskList() {
                           </div>
 
                           <div className="flex items-center gap-4">
-                            <button onClick={() => deleteSubtask(index)}>
+                            <button
+                              onClick={() => deleteSubtask(String(index))}
+                            >
                               <Trash2 className="size-4 text-red-500 hover:text-red-700 cursor-pointer" />
                             </button>
 
                             <button
                               className="cursor-pointer"
-                              onClick={() => duplicateSubtask(index)}
+                              onClick={() => duplicateSubtask(String(index))}
                             >
                               <Copy className="size-4 text-white" />
                             </button>

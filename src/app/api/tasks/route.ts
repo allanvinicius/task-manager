@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Status, Priority } from "@prisma/client";
 
-console.log(Status)
-
 export async function GET() {
   const tasks = await prisma.task.findMany();
   return NextResponse.json(tasks);
