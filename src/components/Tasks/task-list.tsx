@@ -73,6 +73,7 @@ export function TaskList() {
     );
 
     setNewSubtask("");
+    handleUpdate();
   }
 
   function toggleSubtaskCompletion(subtaskIndex: number) {
@@ -88,6 +89,8 @@ export function TaskList() {
           }
         : currentTask
     );
+
+    handleUpdate();
   }
 
   function updateSubtaskTitle(subtaskIndex: number, newTitle: string) {
@@ -101,6 +104,8 @@ export function TaskList() {
           }
         : currentTask
     );
+
+    handleUpdate();
   }
 
   function deleteSubtask(subtaskIndex: number) {
@@ -114,6 +119,8 @@ export function TaskList() {
           }
         : currentTask
     );
+
+    handleUpdate();
   }
 
   function duplicateSubtask(index: number) {
@@ -131,6 +138,8 @@ export function TaskList() {
           }
         : prev
     );
+
+    handleUpdate();
   }
 
   return (
