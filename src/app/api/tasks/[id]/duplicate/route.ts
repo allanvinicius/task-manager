@@ -3,9 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const task = await prisma.task.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+
+  const task = await prisma.task.findUnique({ where: { id } });
 
   if (!task) {
     return NextResponse.json(
