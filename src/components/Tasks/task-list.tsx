@@ -35,6 +35,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { statusLabels, priorityLabels } from "@/utils/labels";
 
 export function TaskList() {
   const {
@@ -95,8 +96,8 @@ export function TaskList() {
                 </TableCell>
 
                 <TableCell>{title}</TableCell>
-                <TableCell>{status}</TableCell>
-                <TableCell>{priority}</TableCell>
+                <TableCell>{statusLabels[status]}</TableCell>
+                <TableCell>{priorityLabels[priority]}</TableCell>
 
                 <TableCell>
                   {subtasks && subtasks.length > 0
@@ -154,7 +155,7 @@ export function TaskList() {
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost">
-                                    {selectedTask.status}
+                                    {statusLabels[selectedTask.status]}
                                   </Button>
                                 </DropdownMenuTrigger>
 
@@ -174,7 +175,7 @@ export function TaskList() {
                                           )
                                         }
                                       >
-                                        {option}
+                                        {statusLabels[option as TaskStatus]}
                                       </DropdownMenuItem>
                                     )
                                   )}
@@ -191,7 +192,7 @@ export function TaskList() {
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost">
-                                    {selectedTask.priority}
+                                    {priorityLabels[selectedTask.priority]}
                                   </Button>
                                 </DropdownMenuTrigger>
 
@@ -211,7 +212,7 @@ export function TaskList() {
                                         )
                                       }
                                     >
-                                      {option}
+                                      {priorityLabels[option as TaskPriority]}
                                     </DropdownMenuItem>
                                   ))}
                                 </DropdownMenuContent>

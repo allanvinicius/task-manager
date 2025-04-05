@@ -11,6 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { statusLabels, priorityLabels } from "@/utils/labels";
+
 import { BadgeCheck, Flag } from "lucide-react";
 
 export function TaskCreate() {
@@ -64,17 +66,17 @@ export function TaskCreate() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" disabled={isTitleEmpty}>
-                    {status || "Vazio"}
+                    {status ? statusLabels[status] : "Vazio"}
                   </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
-                  {["TO_DO", "IN_PROGRESS", "COMPLETED"].map((option) => (
+                  {Object.entries(statusLabels).map(([value, label]) => (
                     <DropdownMenuItem
-                      key={option}
-                      onClick={() => setStatus(option as TaskStatus)}
+                      key={value}
+                      onClick={() => setStatus(value as TaskStatus)}
                     >
-                      {option}
+                      {label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -90,17 +92,17 @@ export function TaskCreate() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" disabled={isTitleEmpty}>
-                    {priority || "Vazio"}
+                    {priority ? priorityLabels[priority] : "Vazio"}
                   </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
-                  {["LOW", "MEDIUM", "HIGH"].map((option) => (
+                  {Object.entries(priorityLabels).map(([value, label]) => (
                     <DropdownMenuItem
-                      key={option}
-                      onClick={() => setPriority(option as TaskPriority)}
+                      key={value}
+                      onClick={() => setPriority(value as TaskPriority)}
                     >
-                      {option}
+                      {label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
