@@ -43,8 +43,15 @@ export function TaskList() {
     deleteTask,
     toggleFavorite,
     duplicateTask,
+
     expandedTaskId,
     setExpandedTaskId,
+
+    addSubtask,
+    toggleSubtaskCompletion,
+    updateSubtaskTitle,
+    deleteSubtask,
+    duplicateSubtask,
   } = useTasks();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -54,72 +61,6 @@ export function TaskList() {
     if (selectedTask) {
       updateTask(selectedTask);
     }
-  }
-
-  async function addSubtask(subtaskId: string, title: string) {
-    const res = await fetch(`/api/tasks/${subtaskId}/subtasks`, {
-      method: "POST",
-      body: JSON.stringify({ title }),
-    });
-
-    if (!res.ok) throw new Error("Erro ao adicionar subtarefa");
-
-    const updatedTask = await res.json();
-
-    setSelectedTask(updatedTask);
-  }
-
-  async function toggleSubtaskCompletion(subtaskId: string) {
-    const res = await fetch(
-      `/api/tasks/${subtaskId}/subtasks/${subtaskId}/toggle`,
-      {
-        method: "PATCH",
-      }
-    );
-
-    if (!res.ok) throw new Error("Erro ao alternar subtarefa");
-
-    const updatedTask = await res.json();
-
-    setSelectedTask(updatedTask);
-  }
-
-  async function updateSubtaskTitle(subtaskId: string, title: string) {
-    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ title }),
-    });
-
-    if (!res.ok) throw new Error("Erro ao atualizar subtarefa");
-
-    const updatedTask = await res.json();
-    setSelectedTask(updatedTask);
-  }
-
-  async function deleteSubtask(subtaskId: string) {
-    const res = await fetch(`/api/tasks/${subtaskId}/subtasks/${subtaskId}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) throw new Error("Erro ao deletar subtarefa");
-
-    const updatedTask = await res.json();
-
-    setSelectedTask(updatedTask);
-  }
-
-  async function duplicateSubtask(subtaskId: string) {
-    const res = await fetch(
-      `/api/tasks/${subtaskId}/subtasks/${subtaskId}/duplicate`,
-      {
-        method: "POST",
-      }
-    );
-
-    if (!res.ok) throw new Error("Erro ao duplicar subtarefa");
-
-    const updatedTask = await res.json();
-    setSelectedTask(updatedTask);
   }
 
   return (

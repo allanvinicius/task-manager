@@ -37,6 +37,12 @@ export interface TaskContextProps {
   toggleFavorite: (id: string) => void;
   duplicateTask: (id: string) => void;
 
+  addSubtask: (subtaskId: string, title: string) => void;
+  toggleSubtaskCompletion: (subtaskId: string) => void;
+  updateSubtaskTitle: (subtaskId: string, title: string) => void;
+  deleteSubtask: (subtaskId: string) => void;
+  duplicateSubtask: (subtaskId: string) => void;
+
   expandedTaskId: string | null;
   setExpandedTaskId: (id: string | null) => void;
 }
