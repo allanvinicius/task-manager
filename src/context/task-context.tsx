@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Task, TaskContextProps } from "@/types";
 
 const TaskContext = createContext<TaskContextProps | undefined>(undefined);
@@ -8,6 +8,16 @@ const TaskContext = createContext<TaskContextProps | undefined>(undefined);
 export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchTasks() {
+      const res = await fetch("/api/tasks");
+      const data = await res.json();
+      setTasks(data);
+    }
+
+    fetchTasks();
+  }, []);
 
   async function addTask(task: Omit<Task, "id">) {
     const res = await fetch("/api/tasks", {
@@ -146,7 +156,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) throw new Error("Erro ao duplicar subtarefa");
 
     const updatedTask = await res.json();
-    
+
     setTasks((prev) =>
       prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
