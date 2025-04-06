@@ -76,3 +76,4 @@ Acesse: [http://localhost:3000](http://localhost:3000)
 
 ## 👨‍💻 Desenvolvido por
 Allan Vinícius de Moura
+Linkedin: [https://www.linkedin.com/in/allanviniciusdemoura/](https://www.linkedin.com/in/allanviniciusdemoura/)
