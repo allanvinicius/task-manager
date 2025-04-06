@@ -1,6 +1,6 @@
 export const statusLabels = {
   TO_DO: "A fazer",
-  IN_PROGRESS: "Em progresso",
+  IN_PROGRESS: "Em andamento",
   COMPLETED: "Concluída",
 };
 

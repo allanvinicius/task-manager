@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Status, Priority } from "@prisma/client";
 
 export async function GET() {
   const tasks = await prisma.task.findMany();
@@ -8,13 +7,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
+  const { title, status, priority, ...data } = await req.json();
 
   const newTask = await prisma.task.create({
     data: {
-      title: data.title,
-      status: Status.TO_DO,
-      priority: Priority.LOW,
+      ...data,
+      title,
+      status,
+      priority,
     },
   });
 
